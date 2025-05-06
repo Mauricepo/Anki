@@ -12,13 +12,13 @@ export const SentenceBuilder = ({
   onAnswered: (correct: number) => void
   apiKey: string
 }) => {
-  const [data, setData] = useState<any>(null)
+  const [data, setData] = useState<{ sentence: string; translation: string; words: string[] } | null>(null)
   const [selected, setSelected] = useState<string[]>([])
 
   useEffect(() => {
     setSelected([])
     fetchSentenceFromGPT(word, apiKey).then(setData)
-  }, [word])
+  }, [word, apiKey])
 
   if (!data) return <p>Lade GPT...</p>
 

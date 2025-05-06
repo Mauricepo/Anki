@@ -1577,7 +1577,7 @@ export const useVocabStore = create<{
         useVocabStore.setState({ vocab: newVocab })
       })
     },
-    getNext: () => {
+    getNext: (): string[] | null => {
       const now = Date.now()
       const state = useVocabStore.getState()
       const { vocab, lastActivation } = state
@@ -1586,7 +1586,7 @@ export const useVocabStore = create<{
       const lastDay = new Date(lastActivation).toDateString()
       const today = new Date(now).toDateString()
 
-      let updatedVocab = { ...vocab }
+      const updatedVocab = { ...vocab }
       if (lastDay !== today) {
         const inactive = Object.values(vocab).filter((v) => !v.isActive)
         const toActivate = inactive.slice(0, DAILY_NEW_LIMIT)
