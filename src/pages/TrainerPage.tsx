@@ -6,12 +6,12 @@ export const TrainerPage: React.FC = () => {
   const getNext = useVocabStore((s) => s.getNext)
   const update = useVocabStore((s) => s.update)
   const [word, setWord] = useState(getNext())
-  const apiKey = import.meta.env.VITE_OPENAI_KEY
+  const apiKey = useVocabStore((s) => s.getApiKey)
 
   return (
     <SentenceBuilder
       word={word ?? []}
-      apiKey={apiKey}
+      apiKey={apiKey()}
       onAnswered={(correct) => {
         if (word) {
           update(word, correct as 1 | 3 | 4 | 5)

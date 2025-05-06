@@ -1548,6 +1548,8 @@ export const useVocabStore = create<{
   markKnown: (word: string) => void
   resetWord: (word: string) => void
   reset: (word: string) => void
+  setApiKey: (word: string) => void
+  getApiKey: () => string
 }>(() => {
   const load = () => {
     const raw = localStorage.getItem('vocab')
@@ -1573,7 +1575,6 @@ export const useVocabStore = create<{
         const state = useVocabStore.getState()
         const updated = updateEntry(state.vocab[word], quality)
         const newVocab = { ...state.vocab, [word]: updated }
-        console.log(word)
         save(newVocab, state.lastActivation)
         useVocabStore.setState({ vocab: newVocab })
       })
@@ -1611,6 +1612,18 @@ export const useVocabStore = create<{
       localStorage.removeItem('vocab')
       localStorage.removeItem('lastActivation')
       useVocabStore.setState({ vocab: entries, lastActivation: 0 })
+    },
+    setApiKey: (key: string) => {
+      localStorage.setItem('apikey', String(key))
+    },
+    getApiKey: (): string => {
+      const key = localStorage.getItem('apikey')
+
+      if (key == '' || key == null) {
+        return import.meta.env.VITE_OPENAI_KEY
+      } else {
+        return key
+      }
     },
     activateNow: (word: string) => {
       const state = useVocabStore.getState()

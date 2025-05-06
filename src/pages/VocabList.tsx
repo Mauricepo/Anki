@@ -1,4 +1,4 @@
-import { Button, MantineProvider } from '@mantine/core'
+import { Input, MantineProvider } from '@mantine/core'
 import { useVocabStore, VocabEntry } from '../store/vocabStore'
 
 export const VocabList = () => {
@@ -7,6 +7,7 @@ export const VocabList = () => {
   const activateNow = useVocabStore((state) => state.activateNow)
   const markKnown = useVocabStore((state) => state.markKnown)
   const resetWord = useVocabStore((state) => state.resetWord)
+  const setApiKey = useVocabStore((state) => state.setApiKey)
 
   const now = Date.now()
   const entries = Object.values(vocab)
@@ -17,11 +18,10 @@ export const VocabList = () => {
     <MantineProvider>
       <div className="p-4">
         <h1 className="text-xl font-bold mb-4">Vokabel-Fortschritt</h1>
-        <Button>Teeest</Button>
+        <Input onChange={(event) => setApiKey(event.currentTarget.value)} placeholder="Api key" />;
         <button onClick={() => reset} className="mb-4 bg-red-500 text-white px-3 py-1 rounded">
           Zurücksetzen
         </button>
-
         {/* Aktive Vokabeln */}
         <h2 className="text-lg font-semibold mb-2">Aktive Vokabeln</h2>
         {active.length === 0 ? (
@@ -58,7 +58,6 @@ export const VocabList = () => {
               })}
           </ul>
         )}
-
         {/* Inaktive Vokabeln */}
         <h2 className="text-lg font-semibold mb-2">Noch nicht gestartet</h2>
         {inactive.length === 0 ? (
