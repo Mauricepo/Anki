@@ -74,7 +74,6 @@ export const SentenceBuilder = ({
           </Grid.Col>
           <Grid.Col span={{ base: 12, md: 6 }} style={{ display: 'flex', justifyContent: 'center' }}>
             <Blockquote color="blue" mt="0">
-              <Group gap="xs">{data.sentence}</Group>
               <Group gap="xs">{data.translation}</Group>
             </Blockquote>
           </Grid.Col>
