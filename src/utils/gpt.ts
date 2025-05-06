@@ -1,6 +1,6 @@
 // utils/gpt.ts
 export const fetchSentenceFromGPT = async (word: string[], apiKey: string) => {
-  const prompt = `Erstelle einen einfachen, natürlichen japanischen Satz (JLPT N5 oder N4) mit den Wörtern und ohne 。 : "${word[0]}", "${word[1]}", "${word[2]}". Gib folgende JSON zurück:
+  const prompt = `Erstelle einen einfachen, natürlichen japanischen Satz (JLPT N5 oder N4) mit den allen! Wörtern und ohne 。 : "${word[0]}", "${word[1]}", "${word[2]}". Gib folgende JSON zurück:
 {
 "sentence": "...",
 "translation": "...",
