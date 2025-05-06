@@ -1,4 +1,4 @@
-import { useVocabStore } from '../store/vocabStore'
+import { useVocabStore, VocabEntry } from '../store/vocabStore'
 
 export const VocabList = () => {
   const vocab = useVocabStore((state) => state.vocab)
@@ -26,8 +26,8 @@ export const VocabList = () => {
       ) : (
         <ul className="space-y-3 mb-6">
           {active
-            .sort((a, b) => a.dueDate - b.dueDate)
-            .map((v) => {
+            .sort((a: VocabEntry, b: VocabEntry) => a.dueDate - b.dueDate)
+            .map((v: VocabEntry) => {
               const dueIn = Math.max(0, Math.ceil((v.dueDate - now) / (1000 * 60 * 60 * 24)))
               const isDue = v.dueDate <= now
               const isNew = v.lastReviewed === v.dueDate
@@ -62,7 +62,7 @@ export const VocabList = () => {
         <p className="text-sm text-gray-500">Alle Vokabeln wurden bereits aktiviert.</p>
       ) : (
         <ul className="space-y-2">
-          {inactive.map((v) => (
+          {inactive.map((v: VocabEntry) => (
             <li key={v.word} className="p-3 rounded-md border text-gray-700 bg-gray-50 flex justify-between items-center">
               <span>{v.word}</span>
               <div className="flex space-x-2">
