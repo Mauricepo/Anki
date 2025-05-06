@@ -9,8 +9,8 @@ export const VocabList = () => {
 
   const now = Date.now()
   const entries = Object.values(vocab)
-  const active = entries.filter((v) => v.isActive)
-  const inactive = entries.filter((v) => !v.isActive)
+  const active = entries.filter((v: VocabEntry) => v.isActive)
+  const inactive = entries.filter((v: VocabEntry) => !v.isActive)
 
   return (
     <div className="p-4">
