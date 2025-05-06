@@ -1547,6 +1547,7 @@ export const useVocabStore = create<{
   activateNow: (word: string) => void
   markKnown: (word: string) => void
   resetWord: (word: string) => void
+  reset: (word: string) => void
 }>(() => {
   const load = () => {
     const raw = localStorage.getItem('vocab')
