@@ -1,6 +1,7 @@
 import { Blockquote, Button, Card, Center, Grid, Group, MantineProvider, Space, Title } from '@mantine/core'
 import { notifications, Notifications } from '@mantine/notifications'
 import { useEffect, useState } from 'react'
+import { useVocabStore, VocabEntry } from '../store/vocabStore'
 import { fetchSentenceFromGPT } from '../utils/gpt'
 
 export const SentenceBuilder = ({
@@ -14,11 +15,25 @@ export const SentenceBuilder = ({
 }) => {
   const [data, setData] = useState<{ sentence: string; translation: string; words: string[] } | null>(null)
   const [selected, setSelected] = useState<string[]>([])
+  const vocab = useVocabStore((state) => state.vocab)
 
   useEffect(() => {
     setSelected([])
-    fetchSentenceFromGPT(word, apiKey).then(setData)
-  }, [word, apiKey])
+    fetchSentenceFromGPT(word, apiKey).then((data) => {
+      const entries = Object.values(vocab)
+      const active = entries.filter((v: VocabEntry) => v.isActive)
+
+      const additionalWords = active
+        .map((v) => v.word)
+        .filter((w) => !data.words.includes(w))
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 5)
+
+      data.words.push(...additionalWords)
+
+      setData(data)
+    })
+  }, [word, apiKey, vocab])
 
   if (!data) return <p>Lade GPT...</p>
 
