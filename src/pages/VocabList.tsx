@@ -1,3 +1,4 @@
+import { Input } from '@mantine/core'
 import { useVocabStore, VocabEntry } from '../store/vocabStore'
 
 export const VocabList = () => {
@@ -15,6 +16,7 @@ export const VocabList = () => {
   return (
     <div className="p-4">
       <h1 className="text-xl font-bold mb-4">Vokabel-Fortschritt</h1>
+      <Input></Input>
       <button onClick={() => reset} className="mb-4 bg-red-500 text-white px-3 py-1 rounded">
         Zurücksetzen
       </button>
