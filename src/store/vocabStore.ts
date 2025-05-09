@@ -1522,19 +1522,31 @@ const createEntry = (word: string): VocabEntry => {
 }
 
 const updateEntry = (entry: VocabEntry, quality: 1 | 3 | 4 | 5): VocabEntry => {
-  let { easeFactor, repetitions, interval } = entry
   const now = Date.now()
+  let { easeFactor, repetitions, interval } = entry
+
+  let dueDate = now
 
   if (quality >= 3) {
     repetitions += 1
-    interval = repetitions === 1 ? 1 : repetitions === 2 ? 6 : Math.round(interval * easeFactor)
-    easeFactor = Math.max(easeFactor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02)), MIN_EF)
-  } else {
-    repetitions = 0
-    interval = 1
-  }
 
-  const dueDate = now + interval * 24 * 60 * 60 * 1000
+    const sameDay = new Date(now).toDateString() === new Date(entry.lastReviewed).toDateString()
+
+    if (repetitions === 1 || (repetitions === 2 && sameDay)) {
+      // Lernphase – mehrmals am selben Tag nötig
+      interval = 0
+      dueDate = now + 10 * 60 * 1000 // 10 Minuten
+    } else if (repetitions === 2) {
+      // Zweiter Erfolg an einem anderen Tag → Intervall 1 Tag
+      interval = 1
+      dueDate = now + interval * 24 * 60 * 60 * 1000
+    } else {
+      interval = Math.round(interval * easeFactor)
+      dueDate = now + interval * 24 * 60 * 60 * 1000
+    }
+
+    easeFactor = Math.max(easeFactor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02)), MIN_EF)
+  }
 
   return { ...entry, easeFactor, interval, repetitions, lastReviewed: now, dueDate }
 }
@@ -1547,7 +1559,7 @@ export const useVocabStore = create<{
   activateNow: (word: string) => void
   markKnown: (word: string) => void
   resetWord: (word: string) => void
-  reset: (word: string) => void
+  reset: () => void
   setApiKey: (word: string) => void
   getApiKey: () => string
 }>(() => {
@@ -1602,7 +1614,13 @@ export const useVocabStore = create<{
       }
 
       const due = Object.values(updatedVocab)
-        .filter((v) => v.isActive && v.dueDate <= now)
+        .filter((v) => {
+          if (!v.isActive) return false
+          if (v.dueDate > now) return false
+
+          // Alle fälligen Karten zeigen, auch wenn sie heute schon gesehen wurden (wenn dueDate wieder <= now)
+          return true
+        })
         .sort((a, b) => a.dueDate - b.dueDate)
 
       return due.length > 0 ? due.slice(0, 3).map((entry) => entry.word) : null

@@ -18,21 +18,28 @@ export const VocabList = () => {
     <MantineProvider>
       <div className="p-4">
         <h1 className="text-xl font-bold mb-4">Vokabel-Fortschritt</h1>
-        <Input onChange={(event) => setApiKey(event.currentTarget.value)} placeholder="Api key" />;
-        <button onClick={() => reset} className="mb-4 bg-red-500 text-white px-3 py-1 rounded">
+        <Input onChange={(event) => setApiKey(event.currentTarget.value)} placeholder="API Key" />
+        <button onClick={() => reset()} className="mb-4 bg-red-500 text-white px-3 py-1 rounded">
           Zurücksetzen
         </button>
-        {/* Aktive Vokabeln */}
+
         <h2 className="text-lg font-semibold mb-2">Aktive Vokabeln</h2>
         {active.length === 0 ? (
           <p className="text-sm text-gray-500 mb-4">Noch keine aktiven Vokabeln für heute.</p>
         ) : (
           <ul className="space-y-3 mb-6">
             {active
-              .sort((a: VocabEntry, b: VocabEntry) => a.dueDate - b.dueDate)
+              .sort((a, b) => a.dueDate - b.dueDate)
               .map((v: VocabEntry) => {
-                const dueIn = Math.max(0, Math.ceil((v.dueDate - now) / (1000 * 60 * 60 * 24)))
-                const isDue = v.dueDate <= now
+                const remainingMs = v.dueDate - now
+                const isDue = remainingMs <= 0
+
+                const dueInText = isDue
+                  ? '📌 Jetzt'
+                  : remainingMs < 24 * 60 * 60 * 1000
+                  ? `in ${Math.ceil(remainingMs / (60 * 1000))} Min.`
+                  : `in ${Math.ceil(remainingMs / (24 * 60 * 60 * 1000))} Tag(en)`
+
                 const isNew = v.lastReviewed === v.dueDate
 
                 return (
@@ -42,7 +49,7 @@ export const VocabList = () => {
                       {isNew && <span className="text-xs text-blue-600 bg-blue-100 px-2 py-0.5 rounded">NEU</span>}
                     </div>
                     <div className="text-sm text-gray-600 mb-2">
-                      Fällig in: {isDue ? '📌 Jetzt' : `in ${dueIn} Tag(en)`}
+                      Fällig: {dueInText}
                       <br />
                       Intervall: {v.interval} Tag(e)
                       <br />
@@ -58,7 +65,7 @@ export const VocabList = () => {
               })}
           </ul>
         )}
-        {/* Inaktive Vokabeln */}
+
         <h2 className="text-lg font-semibold mb-2">Noch nicht gestartet</h2>
         {inactive.length === 0 ? (
           <p className="text-sm text-gray-500">Alle Vokabeln wurden bereits aktiviert.</p>
