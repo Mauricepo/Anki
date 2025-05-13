@@ -57,7 +57,7 @@ export const VocabList = () => {
                       <br />
                       Wiederholungen: {v.repetitions}
                     </div>
-                    <button onClick={() => resetWord(v.word)} className="text-xs bg-gray-200 px-2 py-1 rounded hover:bg-gray-300">
+                    <button onClick={() => resetWord(v)} className="text-xs bg-gray-200 px-2 py-1 rounded hover:bg-gray-300">
                       Wort zurücksetzen
                     </button>
                   </li>

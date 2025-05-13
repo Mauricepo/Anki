@@ -1,10 +1,9 @@
 // utils/gpt.ts
 export const fetchSentenceFromGPT = async (word: string[], apiKey: string) => {
-  const prompt = `Japanischer Satz (JLPT N5/N4) mit: "${word[0]}", "${word[1]}", "${word[2]}". Natürlich, korrekt, sinnvoll. Kanji (außer Katakana). Wörter & Partikeln getrennt. JSON:
+  const prompt = `Japanese Sentence (JLPT N5/N4) with: "${word[0]}", "${word[1]}", "${word[2]}". natural, correct, rational.. JSON:
 {
 "sentence": "... ... ...",
 "translation": "...",
-"sentenceWordsAndParticles": ["...", "...", "..."]
 }`
 
   const res = await fetch('https://api.openai.com/v1/chat/completions', {

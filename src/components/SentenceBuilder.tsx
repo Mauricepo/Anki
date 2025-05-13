@@ -25,11 +25,11 @@ export const SentenceBuilder = ({
         const entries = Object.values(vocab)
         const active = entries.filter((v: VocabEntry) => v.isActive)
         console.log(data.sentence, data.translation, word)
-        const sentenceWords = data.sentence.split(' ').filter((w: string) => w.trim() !== '')
+        const sentenceWords = data.translation.split(' ').filter((w: string) => w.trim() !== '')
         data.words = sentenceWords
 
         const additionalWords = active
-          .map((v) => v.word)
+          .map((v) => v.meaning.split(/[, ]/)[0])
           .filter((w) => !data.words.includes(w))
           .sort(() => Math.random() - 0.5)
           .slice(0, 5)
@@ -53,9 +53,15 @@ export const SentenceBuilder = ({
   }
 
   const SendAnswer = () => {
-    const temp = data?.sentence.replace(/[\s。]/g, '')
+    const temp = data?.translation.toLowerCase().replace(/[\s.,?!]/g, '')
 
-    if (temp == selected.join('').replace(/[\s。]/g, '')) {
+    if (
+      temp ==
+      selected
+        .join('')
+        .toLowerCase()
+        .replace(/[\s.,?!]/g, '')
+    ) {
       notifications.show({
         position: 'bottom-right',
         color: 'green',
