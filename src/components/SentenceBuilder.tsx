@@ -13,7 +13,7 @@ export const SentenceBuilder = ({
   onAnswered: (correct: number) => void
   apiKey: string
 }) => {
-  const [data, setData] = useState<{ sentence: string; translation: string; words: string[] } | null>(null)
+  const [data, setData] = useState<{ sentence: string; translation: string; hiragana: string } | null>(null)
   const [selected, setSelected] = useState<string[]>([])
   const [allDone, setAllDone] = useState<boolean>(false)
   const vocab = useVocabStore((state) => state.vocab)
@@ -92,7 +92,7 @@ export const SentenceBuilder = ({
           <Grid.Col span={{ base: 12, md: 6 }} style={{ display: 'flex', justifyContent: 'center' }}>
             <Blockquote color="blue" mt="0">
               <Group gap="xs">{data?.sentence}</Group>
-              <Group gap="xs">{data?.translation}</Group>
+              <Group gap="xs">{data?.hiragana}</Group>
             </Blockquote>
           </Grid.Col>
           <Grid.Col span={{ base: 12, md: 6 }} style={{ display: 'flex', justifyContent: 'center' }}>

@@ -2,8 +2,9 @@
 export const fetchSentenceFromGPT = async (word: string[], apiKey: string) => {
   const prompt = `Japanese Sentence (JLPT N5/N4) with: "${word[0]}", "${word[1]}", "${word[2]}". natural, correct, rational.. JSON:
 {
-"sentence": "... ... ...",
+"sentence": "...",
 "translation": "...",
+"hiragana": "...",
 }`
 
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
