@@ -25,7 +25,6 @@ export const SentenceBuilder = ({
       fetchSentenceFromGPT(word, apiKey).then((data) => {
         const entries = Object.values(vocab)
         const active = entries.filter((v: VocabEntry) => v.isActive)
-        console.log(data.sentence, data.translation, word)
         const sentenceWords = data.translation.split(' ').filter((w: string) => w.trim() !== '')
         data.words = sentenceWords
 
@@ -39,7 +38,7 @@ export const SentenceBuilder = ({
 
         data.words = data.words.sort(() => Math.random() - 0.5)
         data.sentence = data.sentence.replace(/[\s。]/g, '')
-
+        setSurrendered(false)
         setData(data)
       })
     } else setAllDone(true)
