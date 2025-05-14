@@ -1,4 +1,4 @@
-import { Blockquote, Button, Card, Center, Grid, Group, MantineProvider, Space, Title } from '@mantine/core'
+import { Button, Card, Center, Grid, Group, MantineProvider, Paper, Space, Title } from '@mantine/core'
 import { notifications, Notifications } from '@mantine/notifications'
 import { useEffect, useState } from 'react'
 import { useVocabStore, VocabEntry } from '../store/vocabStore'
@@ -13,10 +13,11 @@ export const SentenceBuilder = ({
   onAnswered: (correct: number) => void
   apiKey: string
 }) => {
-  const [data, setData] = useState<{ sentence: string; translation: string; hiragana: string } | null>(null)
+  const [data, setData] = useState<{ sentence: string; translation: string; words: string[]; hiragana: string } | null>(null)
   const [selected, setSelected] = useState<string[]>([])
   const [allDone, setAllDone] = useState<boolean>(false)
   const vocab = useVocabStore((state) => state.vocab)
+  const [surrendered, setSurrendered] = useState<boolean>(false)
 
   useEffect(() => {
     setSelected([])
@@ -32,7 +33,7 @@ export const SentenceBuilder = ({
           .map((v) => v.meaning.split(/[, ]/)[0])
           .filter((w) => !data.words.includes(w))
           .sort(() => Math.random() - 0.5)
-          .slice(0, 5)
+          .slice(0, 2)
 
         data.words.push(...additionalWords)
 
@@ -57,10 +58,11 @@ export const SentenceBuilder = ({
 
     if (
       temp ==
-      selected
-        .join('')
-        .toLowerCase()
-        .replace(/[\s.,?!]/g, '')
+        selected
+          .join('')
+          .toLowerCase()
+          .replace(/[\s.,?!]/g, '') &&
+      surrendered == false
     ) {
       notifications.show({
         position: 'bottom-right',
@@ -75,7 +77,7 @@ export const SentenceBuilder = ({
           position: 'bottom-right',
           color: 'red',
           title: 'Falsch',
-          message: 'Leider falsch, versuche es erneut 🛑'
+          message: 'Leider falsch, veilleicht beim nächsten mal. 🛑'
         })
       }
       onAnswered(1)
@@ -90,15 +92,27 @@ export const SentenceBuilder = ({
             <Title order={2}>Übersetze</Title>
           </Grid.Col>
           <Grid.Col span={{ base: 12, md: 6 }} style={{ display: 'flex', justifyContent: 'center' }}>
-            <Blockquote color="blue" mt="0">
+            <Paper color={'red'} p="xl" shadow="xl" radius="lg">
               <Group gap="xs">{data?.sentence}</Group>
-              <Group gap="xs">{data?.hiragana}</Group>
-            </Blockquote>
+            </Paper>
           </Grid.Col>
           <Grid.Col span={{ base: 12, md: 6 }} style={{ display: 'flex', justifyContent: 'center' }}>
-            <Blockquote color="blue" mt="xl">
+            <Paper p="xl" shadow="xl" radius="lg">
+              <Group gap="xs">{data?.hiragana}</Group>
+            </Paper>
+          </Grid.Col>
+
+          {surrendered && (
+            <Grid.Col span={{ base: 12, md: 6 }} style={{ display: 'flex', justifyContent: 'center' }}>
+              <Paper p="xl" shadow="xl" radius="lg">
+                <Group gap="xs">{data?.translation}</Group>
+              </Paper>
+            </Grid.Col>
+          )}
+          <Grid.Col span={{ base: 12, md: 6 }} style={{ display: 'flex', justifyContent: 'center' }}>
+            <Paper p="xl" shadow="xl" radius="lg">
               <Group>{selected.join(' ')}</Group>
-            </Blockquote>
+            </Paper>
           </Grid.Col>
         </Card.Section>
         <Space></Space>
@@ -122,6 +136,7 @@ export const SentenceBuilder = ({
             <Center>
               <Group>
                 <Button onClick={() => SendAnswer()}>Antwort prüfen</Button>
+                <Button onClick={() => setSurrendered(true)}>Aufgeben</Button>
                 <Button onClick={() => resetSelection()}>Reset</Button>
               </Group>
             </Center>
