@@ -4564,8 +4564,8 @@ const updateEntry = (entry: VocabEntry, quality: 1 | 3 | 4 | 5): VocabEntry => {
 export const useVocabStore = create<{
   vocab: Record<string, VocabEntry>
   lastActivation: number
-  update: (word: string[], quality: 1 | 3 | 4 | 5) => void
-  getNext: () => string[] | null
+  update: (word: string, quality: 1 | 3 | 4 | 5) => void
+  getNext: () => string | null
   activateNow: (word: string) => void
   markKnown: (word: string) => void
   resetWord: (word: VocabEntry) => void
@@ -4592,16 +4592,14 @@ export const useVocabStore = create<{
   return {
     vocab: initialVocab,
     lastActivation,
-    update: (words, quality) => {
-      words.forEach((word) => {
-        const state = useVocabStore.getState()
-        const updated = updateEntry(state.vocab[word], quality)
-        const newVocab = { ...state.vocab, [word]: updated }
-        save(newVocab, state.lastActivation)
-        useVocabStore.setState({ vocab: newVocab })
-      })
+    update: (word, quality) => {
+      const state = useVocabStore.getState()
+      const updated = updateEntry(state.vocab[word], quality)
+      const newVocab = { ...state.vocab, [word]: updated }
+      save(newVocab, state.lastActivation)
+      useVocabStore.setState({ vocab: newVocab })
     },
-    getNext: (): string[] | null => {
+    getNext: (): string | null => {
       const now = Date.now()
       const state = useVocabStore.getState()
       const { vocab, lastActivation } = state
@@ -4633,7 +4631,7 @@ export const useVocabStore = create<{
         })
         .sort((a, b) => a.dueDate - b.dueDate)
 
-      return due.length > 0 ? due.slice(0, 3).map((entry) => entry.word) : null
+      return due.length > 0 ? due[0].word : null
     },
     reset: () => {
       const entries = Object.fromEntries(

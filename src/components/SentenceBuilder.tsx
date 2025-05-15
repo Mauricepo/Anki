@@ -4,15 +4,7 @@ import { useEffect, useState } from 'react'
 import { useVocabStore, VocabEntry } from '../store/vocabStore'
 import { fetchSentenceFromGPT } from '../utils/gpt'
 
-export const SentenceBuilder = ({
-  word,
-  onAnswered,
-  apiKey
-}: {
-  word: string[]
-  onAnswered: (correct: number) => void
-  apiKey: string
-}) => {
+export const SentenceBuilder = ({ word, onAnswered, apiKey }: { word: string; onAnswered: (correct: number) => void; apiKey: string }) => {
   const [data, setData] = useState<{ sentence: string; translation: string; words: string[]; hiragana: string } | null>(null)
   const [selected, setSelected] = useState<string[]>([])
   const [allDone, setAllDone] = useState<boolean>(false)

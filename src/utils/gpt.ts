@@ -1,6 +1,6 @@
 // utils/gpt.ts
-export const fetchSentenceFromGPT = async (word: string[], apiKey: string) => {
-  const prompt = `Japanese Sentence (JLPT N5/N4) with: "${word[0]}", "${word[1]}", "${word[2]}". natural, correct, rational.. JSON:
+export const fetchSentenceFromGPT = async (word: string, apiKey: string) => {
+  const prompt = `Japanese Sentence JLPT N5 with: "${word}". natural, correct, rational, short.. JSON:
 {
 "sentence": "...",
 "translation": "...",
