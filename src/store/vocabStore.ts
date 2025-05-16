@@ -4534,31 +4534,42 @@ const createEntry = (word: string, meaning: string): VocabEntry => {
 const updateEntry = (entry: VocabEntry, quality: 1 | 3 | 4 | 5): VocabEntry => {
   const now = Date.now()
   let { easeFactor, repetitions, interval } = entry
-
   let dueDate = now
 
   if (quality >= 3) {
     repetitions += 1
 
-    const sameDay = new Date(now).toDateString() === new Date(entry.lastReviewed).toDateString()
-
-    if (repetitions === 1 || (repetitions === 2 && sameDay)) {
-      // Lernphase – mehrmals am selben Tag nötig
-      interval = 0
-      dueDate = now + 10 * 60 * 1000 // 10 Minuten
+    if (repetitions === 1) {
+      interval = 0 // Lernphase Schritt 1: 10 Minuten
+      dueDate = now + 10 * 60 * 1000
     } else if (repetitions === 2) {
-      // Zweiter Erfolg an einem anderen Tag → Intervall 1 Tag
-      interval = 1
+      interval = 1 // Lernphase Schritt 2: 1 Tag
+      dueDate = now + interval * 24 * 60 * 60 * 1000
+    } else if (repetitions === 3) {
+      interval = 6 // Start Intervallphase
       dueDate = now + interval * 24 * 60 * 60 * 1000
     } else {
       interval = Math.round(interval * easeFactor)
       dueDate = now + interval * 24 * 60 * 60 * 1000
     }
 
-    easeFactor = Math.max(easeFactor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02)), MIN_EF)
+    easeFactor = Math.max(MIN_EF, easeFactor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02)))
+  } else {
+    // Bei Fehler → Zurück zur Lernphase
+    repetitions = 0
+    interval = 0
+    dueDate = now + 10 * 60 * 1000
+    easeFactor = Math.max(MIN_EF, easeFactor - 0.2)
   }
 
-  return { ...entry, easeFactor, interval, repetitions, lastReviewed: now, dueDate }
+  return {
+    ...entry,
+    easeFactor,
+    interval,
+    repetitions,
+    lastReviewed: now,
+    dueDate
+  }
 }
 
 export const useVocabStore = create<{
@@ -4655,8 +4666,9 @@ export const useVocabStore = create<{
     },
     activateNow: (word: string) => {
       const state = useVocabStore.getState()
+      const now = Date.now()
       const entry = state.vocab[word]
-      const updated = { ...entry, isActive: true }
+      const updated = { ...entry, isActive: true, dueDate: now }
       const newVocab = { ...state.vocab, [word]: updated }
       save(newVocab, state.lastActivation)
       useVocabStore.setState({ vocab: newVocab })
