@@ -10,7 +10,7 @@ export const TrainerPage: React.FC = () => {
 
   return (
     <SentenceBuilder
-      word={word ?? []}
+      word={word ?? ''}
       apiKey={apiKey()}
       onAnswered={(correct) => {
         if (word) {
