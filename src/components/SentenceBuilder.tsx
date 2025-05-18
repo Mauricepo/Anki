@@ -71,7 +71,7 @@ export const SentenceBuilder = ({ word, onAnswered, apiKey }: { word: string; on
           message: 'Leider falsch, veilleicht beim nächsten mal. 🛑'
         })
       }
-      onAnswered(1)
+      onAnswered(4)
     }
   }
 
