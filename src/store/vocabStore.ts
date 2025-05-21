@@ -4558,7 +4558,7 @@ const updateEntry = (entry: VocabEntry, quality: 1 | 3 | 4 | 5): VocabEntry => {
     // Bei Fehler → Zurück zur Lernphase
     repetitions = 0
     interval = 0
-    dueDate = now + 10 * 60 * 1000
+    dueDate = now
     easeFactor = Math.max(MIN_EF, easeFactor - 0.2)
   }
 
@@ -4626,6 +4626,14 @@ export const useVocabStore = create<{
 
         for (const entry of toActivate) {
           updatedVocab[entry.word] = { ...entry, isActive: true }
+        }
+
+        const active = Object.values(vocab).filter((v) => v.isActive)
+
+        for (const entry of active) {
+          if (entry.dueDate > now * 24 * 60 * 60 * 1000) {
+            updatedVocab[entry.word] = { ...entry, dueDate: now }
+          }
         }
 
         save(updatedVocab, now)
