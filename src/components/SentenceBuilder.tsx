@@ -8,12 +8,14 @@ export const SentenceBuilder = ({ word, onAnswered, apiKey }: { word: string; on
   const [data, setData] = useState<{ sentence: string; translation: string; words: string[]; hiragana: string } | null>(null)
   const [selected, setSelected] = useState<string[]>([])
   const [allDone, setAllDone] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
   const vocab = useVocabStore((state) => state.vocab)
   const [surrendered, setSurrendered] = useState<boolean>(false)
 
   useEffect(() => {
     setSelected([])
     if (word.length > 0) {
+      setLoading(true)
       fetchSentenceFromGPT(word, apiKey).then((data) => {
         const entries = Object.values(vocab)
         const active = entries.filter((v: VocabEntry) => v.isActive)
@@ -32,6 +34,7 @@ export const SentenceBuilder = ({ word, onAnswered, apiKey }: { word: string; on
         data.sentence = data.sentence.replace(/[\s。]/g, '')
         setSurrendered(false)
         setData(data)
+        setLoading(false)
       })
     } else setAllDone(true)
   }, [word, apiKey, vocab])
@@ -39,6 +42,8 @@ export const SentenceBuilder = ({ word, onAnswered, apiKey }: { word: string; on
   if (!data && !allDone) return <p>Lade GPT...</p>
 
   if (allDone) return <p>Alles Erledigt</p>
+
+  if (loading) return <p>Generiere Satz</p>
 
   const resetSelection = () => {
     setSelected([])
@@ -81,6 +86,9 @@ export const SentenceBuilder = ({ word, onAnswered, apiKey }: { word: string; on
         <Card.Section component={Grid} inheritPadding>
           <Grid.Col span={{ base: 12, md: 6 }} style={{ display: 'flex', justifyContent: 'center' }}>
             <Title order={2}>Übersetze</Title>
+          </Grid.Col>
+          <Grid.Col span={{ base: 12, md: 6 }} style={{ display: 'flex', justifyContent: 'center' }}>
+            <Title order={2}>{word}</Title>
           </Grid.Col>
           <Grid.Col span={{ base: 12, md: 6 }} style={{ display: 'flex', justifyContent: 'center' }}>
             <Paper color={'red'} p="xl" shadow="xl" radius="lg">
