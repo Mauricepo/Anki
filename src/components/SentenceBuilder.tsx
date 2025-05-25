@@ -97,10 +97,9 @@ export const SentenceBuilder = ({
           </Grid.Col>
           <Grid.Col span={{ base: 12, md: 6 }} style={{ display: 'flex', justifyContent: 'center' }}>
             <Title order={2}>
-              {word?.word.split('/')[0]}
-              {surrendered && word?.word.split('/')[1]}
+              {word?.word.split('/')[0]}/{surrendered && word?.word.split('/')[1]}
             </Title>
-            <Title order={2}>{surrendered && word?.meaning}</Title>
+            <Title order={2}>{surrendered && `/${word?.meaning}`}</Title>
           </Grid.Col>
           <Grid.Col span={{ base: 12, md: 6 }} style={{ display: 'flex', justifyContent: 'center' }}>
             <Paper color={'red'} p="xl" shadow="xl" radius="lg">
