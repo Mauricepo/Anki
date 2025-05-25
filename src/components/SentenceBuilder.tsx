@@ -4,7 +4,15 @@ import { useEffect, useState } from 'react'
 import { useVocabStore, VocabEntry } from '../store/vocabStore'
 import { fetchSentenceFromGPT } from '../utils/gpt'
 
-export const SentenceBuilder = ({ word, onAnswered, apiKey }: { word: string; onAnswered: (correct: number) => void; apiKey: string }) => {
+export const SentenceBuilder = ({
+  word,
+  onAnswered,
+  apiKey
+}: {
+  word: VocabEntry | undefined
+  onAnswered: (correct: number) => void
+  apiKey: string
+}) => {
   const [data, setData] = useState<{ sentence: string; translation: string; words: string[]; hiragana: string } | null>(null)
   const [selected, setSelected] = useState<string[]>([])
   const [allDone, setAllDone] = useState<boolean>(false)
@@ -14,9 +22,9 @@ export const SentenceBuilder = ({ word, onAnswered, apiKey }: { word: string; on
 
   useEffect(() => {
     setSelected([])
-    if (word.length > 0) {
+    if (word) {
       setLoading(true)
-      fetchSentenceFromGPT(word, apiKey).then((data) => {
+      fetchSentenceFromGPT(word.word, apiKey).then((data) => {
         const entries = Object.values(vocab)
         const active = entries.filter((v: VocabEntry) => v.isActive)
         const sentenceWords = data.translation.split(' ').filter((w: string) => w.trim() !== '')
@@ -88,7 +96,11 @@ export const SentenceBuilder = ({ word, onAnswered, apiKey }: { word: string; on
             <Title order={2}>Übersetze</Title>
           </Grid.Col>
           <Grid.Col span={{ base: 12, md: 6 }} style={{ display: 'flex', justifyContent: 'center' }}>
-            <Title order={2}>{word}</Title>
+            <Title order={2}>
+              {word?.word.split('/')[0]}
+              {surrendered && word?.word.split('/')[1]}
+            </Title>
+            <Title order={2}>{surrendered && word?.meaning}</Title>
           </Grid.Col>
           <Grid.Col span={{ base: 12, md: 6 }} style={{ display: 'flex', justifyContent: 'center' }}>
             <Paper color={'red'} p="xl" shadow="xl" radius="lg">
@@ -134,7 +146,7 @@ export const SentenceBuilder = ({ word, onAnswered, apiKey }: { word: string; on
           <Grid.Col span={{ base: 12, md: 12 }} style={{ display: 'flex', justifyContent: 'center' }}>
             <Center>
               <Group>
-                <Button onClick={() => SendAnswer()}>Antwort prüfen</Button>
+                <Button onClick={() => SendAnswer()}>{!surrendered ? 'Antwort prüfen' : 'Nächstes'}</Button>
                 <Button onClick={() => setSurrendered(true)}>Aufgeben</Button>
                 <Button onClick={() => resetSelection()}>Reset</Button>
               </Group>

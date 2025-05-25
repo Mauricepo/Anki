@@ -4588,7 +4588,7 @@ export const useVocabStore = create<{
   vocab: Record<string, VocabEntry>
   lastActivation: number
   update: (word: string, quality: 1 | 3 | 4 | 5) => void
-  getNext: () => string | null
+  getNext: () => VocabEntry | null
   activateNow: (word: string) => void
   markKnown: (word: string) => void
   resetWord: (word: VocabEntry) => void
@@ -4622,7 +4622,7 @@ export const useVocabStore = create<{
       save(newVocab, state.lastActivation)
       useVocabStore.setState({ vocab: newVocab })
     },
-    getNext: (): string | null => {
+    getNext: (): VocabEntry | null => {
       const now = Date.now()
       const state = useVocabStore.getState()
       const { vocab, lastActivation } = state
@@ -4633,12 +4633,12 @@ export const useVocabStore = create<{
 
       const updatedVocab = { ...vocab }
       if (lastDay !== today) {
-        const inactive = Object.values(vocab).filter((v) => !v.isActive)
-        const toActivate = inactive.slice(0, DAILY_NEW_LIMIT)
+        // const inactive = Object.values(vocab).filter((v) => !v.isActive)
+        // const toActivate = inactive.slice(0, DAILY_NEW_LIMIT)
 
-        for (const entry of toActivate) {
-          updatedVocab[entry.word] = { ...entry, isActive: true }
-        }
+        // for (const entry of toActivate) {
+        //   updatedVocab[entry.word] = { ...entry, isActive: true }
+        // }
 
         const active = Object.values(vocab).filter((v) => v.isActive)
 
@@ -4662,7 +4662,7 @@ export const useVocabStore = create<{
         })
         .sort((a, b) => a.dueDate - b.dueDate)
 
-      return due.length > 0 ? due[0].word : null
+      return due.length > 0 ? due[0] : null
     },
     reset: () => {
       const entries = Object.fromEntries(
