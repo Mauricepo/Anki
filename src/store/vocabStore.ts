@@ -4504,7 +4504,7 @@ const initialWords = [
 ]
 
 const MIN_EF = 1.3
-const DAILY_NEW_LIMIT = 10
+// const DAILY_NEW_LIMIT = 10
 
 export interface VocabEntry {
   word: string
