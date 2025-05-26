@@ -96,15 +96,17 @@ export const SentenceBuilder = ({
             <Title order={2}>Übersetze</Title>
           </Grid.Col>
           <Grid.Col span={{ base: 12, md: 6 }} style={{ display: 'flex', justifyContent: 'center' }}>
-            <HoverCard.Target>
-              <Button>{word?.word.split('/')[0]}</Button>
-            </HoverCard.Target>
-            <HoverCard.Dropdown>
-              <Stack>
-                <Title order={3}>{word?.word.split('/')[1]}</Title>
-                <Title order={3}>{word?.meaning}</Title>
-              </Stack>
-            </HoverCard.Dropdown>
+            <HoverCard width={280} shadow="md">
+              <HoverCard.Target>
+                <Title order={2}>{word?.word.split('/')[0]}</Title>
+              </HoverCard.Target>
+              <HoverCard.Dropdown>
+                <Stack>
+                  <Title order={3}>{word?.word.split('/')[1]}</Title>
+                  <Title order={3}>{word?.meaning}</Title>
+                </Stack>
+              </HoverCard.Dropdown>
+            </HoverCard>
           </Grid.Col>
           <Grid.Col span={{ base: 12, md: 6 }} style={{ display: 'flex', justifyContent: 'center' }}>
             <Paper color={'red'} p="xl" shadow="xl" radius="lg">
