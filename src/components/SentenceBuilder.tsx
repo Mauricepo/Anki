@@ -1,4 +1,4 @@
-import { Button, Card, Center, Grid, Group, HoverCard, MantineProvider, Paper, Space, Stack, Title } from '@mantine/core'
+import { Button, Card, Center, Grid, Group, MantineProvider, Paper, Popover, Space, Stack, Text, Title } from '@mantine/core'
 import { notifications, Notifications } from '@mantine/notifications'
 import { useEffect, useState } from 'react'
 import { useVocabStore, VocabEntry } from '../store/vocabStore'
@@ -96,17 +96,19 @@ export const SentenceBuilder = ({
             <Title order={2}>Übersetze</Title>
           </Grid.Col>
           <Grid.Col span={{ base: 12, md: 6 }} style={{ display: 'flex', justifyContent: 'center' }}>
-            <HoverCard width={280} shadow="md">
-              <HoverCard.Target>
-                <Title order={2}>{word?.word.split('/')[0]}</Title>
-              </HoverCard.Target>
-              <HoverCard.Dropdown>
+            <Popover width={200} position="bottom" withArrow shadow="md">
+              <Popover.Target>
+                <Button size="md" color="black" variant="transparent">
+                  {word?.word.split('/')[0]}
+                </Button>
+              </Popover.Target>
+              <Popover.Dropdown>
                 <Stack>
-                  <Title order={3}>{word?.word.split('/')[1]}</Title>
-                  <Title order={3}>{word?.meaning}</Title>
+                  <Text size="sm">{word?.word.split('/')[1]}</Text>
+                  <Text size="sm">{word?.meaning}</Text>
                 </Stack>
-              </HoverCard.Dropdown>
-            </HoverCard>
+              </Popover.Dropdown>
+            </Popover>
           </Grid.Col>
           <Grid.Col span={{ base: 12, md: 6 }} style={{ display: 'flex', justifyContent: 'center' }}>
             <Paper color={'red'} p="xl" shadow="xl" radius="lg">
