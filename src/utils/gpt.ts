@@ -1,6 +1,6 @@
 // utils/gpt.ts
 export const fetchSentenceFromGPT = async (word: string, apiKey: string) => {
-  const prompt = `Japanese Sentence JLPT N5 with: "${word}". natural, correct, rational, very short and in kanji JSON:
+  const prompt = `JLPT N5 Japanese sentence with: "${word}". Use natural, common grammar. Very short. In kanji.:
 {
 "sentence": "...",
 "translation": "...",
