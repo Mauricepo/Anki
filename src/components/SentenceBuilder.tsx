@@ -120,6 +120,11 @@ export const SentenceBuilder = ({
               <Group gap="xs">{data?.hiragana}</Group>
             </Paper>
           </Grid.Col>
+          <Grid.Col span={{ base: 12, md: 6 }} style={{ display: 'flex', justifyContent: 'center' }}>
+            <Paper p="xl" shadow="xl" radius="lg">
+              <Group gap="xs">{data?.translation}</Group>
+            </Paper>
+          </Grid.Col>
 
           {surrendered && (
             <Grid.Col span={{ base: 12, md: 6 }} style={{ display: 'flex', justifyContent: 'center' }}>
