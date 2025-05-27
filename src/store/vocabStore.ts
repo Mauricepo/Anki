@@ -4621,6 +4621,7 @@ export const useVocabStore = create<{
 
       const updatedVocab = { ...vocab }
       if (lastDay !== today) {
+        // Neue Aktivierung von 10 Wörtern pro Tag
         // const inactive = Object.values(vocab).filter((v) => !v.isActive)
         // const toActivate = inactive.slice(0, DAILY_NEW_LIMIT)
 
@@ -4631,7 +4632,7 @@ export const useVocabStore = create<{
         const active = Object.values(vocab).filter((v) => v.isActive)
 
         for (const entry of active) {
-          if (entry.dueDate > now * 24 * 60 * 60 * 1000) {
+          if (entry.dueDate < now * 24 * 60 * 60 * 1000) {
             updatedVocab[entry.word] = { ...entry, dueDate: now }
           }
         }
