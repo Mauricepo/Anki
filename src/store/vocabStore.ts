@@ -4515,6 +4515,7 @@ export interface VocabEntry {
   dueDate: number
   lastReviewed: number
   isActive: boolean
+  lapseState: boolean
 }
 
 const createEntry = (word: string, meaning: string): VocabEntry => {
@@ -4527,39 +4528,52 @@ const createEntry = (word: string, meaning: string): VocabEntry => {
     repetitions: 0,
     dueDate: now,
     lastReviewed: now,
-    isActive: false
+    isActive: false,
+    lapseState: false
   }
 }
 
 const updateEntry = (entry: VocabEntry, quality: 1 | 3 | 4 | 5): VocabEntry => {
   const now = Date.now()
-  let { easeFactor, repetitions, interval } = entry
+  let { easeFactor, repetitions, interval, lapseState } = entry
   let dueDate = now
 
   if (quality >= 3) {
     repetitions += 1
 
-    if (repetitions === 1) {
-      interval = 0 // Lernphase Schritt 1: 10 Minuten
-      dueDate = now + 10 * 60 * 1000
-    } else if (repetitions === 2) {
-      interval = 1 // Lernphase Schritt 2: 1 Tag
-      dueDate = now + interval * 24 * 60 * 60 * 1000
-    } else if (repetitions === 3) {
-      interval = 6 // Start Intervallphase
-      dueDate = now + interval * 24 * 60 * 60 * 1000
+    if (!lapseState) {
+      if (repetitions === 1) {
+        interval = 0 // Lernphase Schritt 1: 10 Minuten
+        dueDate = now + 10 * 60 * 1000
+      } else if (repetitions === 2) {
+        interval = 1 // Lernphase Schritt 2: 1 Tag
+        dueDate = now + interval * 24 * 60 * 60 * 1000
+      } else if (repetitions === 3 && !lapseState) {
+        interval = 6 // Start Intervallphase
+        dueDate = now + interval * 24 * 60 * 60 * 1000
+      } else {
+        interval = Math.round(interval * easeFactor)
+        dueDate = now + interval * 24 * 60 * 60 * 1000
+      }
+      easeFactor = Math.max(MIN_EF, easeFactor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02)))
     } else {
-      interval = Math.round(interval * easeFactor)
-      dueDate = now + interval * 24 * 60 * 60 * 1000
+      if (repetitions === 1) {
+        dueDate = now + 10 * 60 * 1000
+      } else {
+        interval = Math.round(interval * easeFactor)
+        dueDate = now + interval * 24 * 60 * 60 * 1000
+        repetitions = 4
+        lapseState = false
+        easeFactor = Math.max(MIN_EF, easeFactor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02)))
+      }
     }
-
-    easeFactor = Math.max(MIN_EF, easeFactor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02)))
   } else {
     // Bei Fehler → Zurück zur Lernphase
-    repetitions = 0
-    interval = 0
+    interval = Math.round(entry.interval * 0.7)
     dueDate = now
-    easeFactor = Math.max(MIN_EF, easeFactor - 0.2)
+    lapseState = repetitions > 3 ? true : lapseState
+    repetitions = 0
+    easeFactor = Math.max(MIN_EF, easeFactor - 0.2) <= 1.3 ? Math.max(MIN_EF, easeFactor - 0.2) : 1.3
   }
 
   return {
@@ -4567,6 +4581,7 @@ const updateEntry = (entry: VocabEntry, quality: 1 | 3 | 4 | 5): VocabEntry => {
     easeFactor,
     interval,
     repetitions,
+    lapseState,
     lastReviewed: now,
     dueDate
   }
