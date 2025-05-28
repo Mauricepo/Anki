@@ -55,7 +55,7 @@ export const VocabList = () => {
                       <br />
                       Leichtigkeit (EF): {v.easeFactor.toFixed(2)}
                       <br />
-                      Wird nachgeholt?: {v.lapseState}
+                      Wird nachgeholt?: {v.lapseState ? 'Jap' : 'Nein'}
                     </div>
                     <button onClick={() => resetWord(v)} className="text-xs bg-gray-200 px-2 py-1 rounded hover:bg-gray-300">
                       Wort zurücksetzen
