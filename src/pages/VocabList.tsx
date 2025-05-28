@@ -55,10 +55,16 @@ export const VocabList = () => {
                       <br />
                       Leichtigkeit (EF): {v.easeFactor.toFixed(2)}
                       <br />
-                      Wiederholungen: {v.repetitions}
+                      Wird nachgeholt?: {v.lapseState}
                     </div>
                     <button onClick={() => resetWord(v)} className="text-xs bg-gray-200 px-2 py-1 rounded hover:bg-gray-300">
                       Wort zurücksetzen
+                    </button>
+                    <button
+                      onClick={() => markKnown(v.word)}
+                      className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded hover:bg-green-200"
+                    >
+                      Kenne ich schon
                     </button>
                   </li>
                 )

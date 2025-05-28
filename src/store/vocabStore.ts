@@ -4706,7 +4706,7 @@ export const useVocabStore = create<{
         isActive: true,
         easeFactor: 2.6,
         interval: 21,
-        repetitions: 3,
+        repetitions: 4,
         dueDate: now + 21 * 24 * 60 * 60 * 1000,
         lastReviewed: now
       }
