@@ -4571,7 +4571,7 @@ const updateEntry = (entry: VocabEntry, quality: 1 | 3 | 4 | 5): VocabEntry => {
     // Bei Fehler → Zurück zur Lernphase
     interval = Math.round(entry.interval * 0.7)
     dueDate = now
-    lapseState = repetitions > 3 ? true : lapseState
+    lapseState = repetitions >= 3 ? true : lapseState
     repetitions = 0
     easeFactor = Math.max(MIN_EF, easeFactor - 0.2) <= 1.3 ? Math.max(MIN_EF, easeFactor - 0.2) : 1.3
   }
