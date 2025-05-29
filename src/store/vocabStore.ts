@@ -4628,33 +4628,36 @@ export const useVocabStore = create<{
     getNext: (): VocabEntry | null => {
       const now = Date.now()
       const state = useVocabStore.getState()
-      const { vocab, lastActivation } = state
+      //  const { vocab, lastActivation } = state
+      const { vocab } = state
 
       // Neue Aktivierung falls neuer Tag
-      const lastDay = new Date(lastActivation).toDateString()
-      const today = new Date(now).toDateString()
+      //   const lastDay = new Date(lastActivation).toDateString()
+      //  const today = new Date(now).toDateString()
 
       const updatedVocab = { ...vocab }
-      if (lastDay !== today) {
-        // Neue Aktivierung von 10 Wörtern pro Tag
-        // const inactive = Object.values(vocab).filter((v) => !v.isActive)
-        // const toActivate = inactive.slice(0, DAILY_NEW_LIMIT)
+      // if (lastDay !== today) {
+      // Neue Aktivierung von 10 Wörtern pro Tag
+      // const inactive = Object.values(vocab).filter((v) => !v.isActive)
+      // const toActivate = inactive.slice(0, DAILY_NEW_LIMIT)
 
-        // for (const entry of toActivate) {
-        //   updatedVocab[entry.word] = { ...entry, isActive: true }
-        // }
+      // for (const entry of toActivate) {
+      //   updatedVocab[entry.word] = { ...entry, isActive: true }
+      // }
 
-        const active = Object.values(vocab).filter((v) => v.isActive)
+      // aktiviert alle in dne nächsten 24 Stunden fälligen Karten
 
-        for (const entry of active) {
-          if (entry.dueDate < now + 1 * 24 * 60 * 60 * 1000) {
-            updatedVocab[entry.word] = { ...entry, dueDate: now }
-          }
-        }
+      // const active = Object.values(vocab).filter((v) => v.isActive)
 
-        save(updatedVocab, now)
-        useVocabStore.setState({ vocab: updatedVocab, lastActivation: now })
-      }
+      // for (const entry of active) {
+      //   if (entry.dueDate < now + 1 * 24 * 60 * 60 * 1000) {
+      //     updatedVocab[entry.word] = { ...entry, dueDate: now }
+      //   }
+      // }
+
+      // save(updatedVocab, now)
+      // useVocabStore.setState({ vocab: updatedVocab, lastActivation: now })
+      // }
 
       const due = Object.values(updatedVocab)
         .filter((v) => {
