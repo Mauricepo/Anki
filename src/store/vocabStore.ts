@@ -4647,7 +4647,7 @@ export const useVocabStore = create<{
         const active = Object.values(vocab).filter((v) => v.isActive)
 
         for (const entry of active) {
-          if (entry.dueDate < now * 24 * 60 * 60 * 1000) {
+          if (entry.dueDate < now + 1 * 24 * 60 * 60 * 1000) {
             updatedVocab[entry.word] = { ...entry, dueDate: now }
           }
         }
