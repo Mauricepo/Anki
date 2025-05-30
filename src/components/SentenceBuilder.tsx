@@ -1,8 +1,9 @@
-import { Button, Card, Center, Grid, Group, MantineProvider, Paper, Popover, Space, Stack, Text, Title } from '@mantine/core'
+import { Button, Card, Center, Grid, Group, MantineProvider, Modal, Paper, Popover, Space, Stack, Text, Title } from '@mantine/core'
+import { useDisclosure } from '@mantine/hooks'
 import { notifications, Notifications } from '@mantine/notifications'
 import { useEffect, useState } from 'react'
 import { useVocabStore, VocabEntry } from '../store/vocabStore'
-import { fetchSentenceFromGPT } from '../utils/gpt'
+import { fetchExplainationFromGPT, fetchSentenceFromGPT } from '../utils/gpt'
 
 export const SentenceBuilder = ({
   word,
@@ -19,6 +20,8 @@ export const SentenceBuilder = ({
   const [loading, setLoading] = useState<boolean>(false)
   const vocab = useVocabStore((state) => state.vocab)
   const [surrendered, setSurrendered] = useState<boolean>(false)
+  const [opened, { open, close }] = useDisclosure(false)
+  const [explanation, setExplanation] = useState<string>('')
 
   useEffect(() => {
     setSelected([])
@@ -42,6 +45,7 @@ export const SentenceBuilder = ({
         data.sentence = data.sentence.replace(/[\s。]/g, '')
         setSurrendered(false)
         setData(data)
+        setExplanation('')
         setLoading(false)
       })
     } else setAllDone(true)
@@ -55,6 +59,15 @@ export const SentenceBuilder = ({
 
   const resetSelection = () => {
     setSelected([])
+  }
+
+  const getExplanation = () => {
+    open()
+    if (data?.sentence && explanation == '') {
+      fetchExplainationFromGPT(data.sentence, apiKey).then((data) => {
+        setExplanation(data.explanation)
+      })
+    }
   }
 
   const SendAnswer = () => {
@@ -90,6 +103,9 @@ export const SentenceBuilder = ({
 
   return (
     <MantineProvider>
+      <Modal opened={opened} onClose={close} title="Authentication">
+        {explanation}
+      </Modal>
       <Card style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Card.Section component={Grid} inheritPadding>
           <Grid.Col span={{ base: 12, md: 6 }} style={{ display: 'flex', justifyContent: 'center' }}>
@@ -112,7 +128,13 @@ export const SentenceBuilder = ({
           </Grid.Col>
           <Grid.Col span={{ base: 12, md: 6 }} style={{ display: 'flex', justifyContent: 'center' }}>
             <Paper color={'red'} p="xl" shadow="xl" radius="lg">
-              <Group gap="xs">{data?.sentence}</Group>
+              <Stack align="center">
+                <Group gap="xs">{data?.sentence}</Group>
+                <Button onClick={() => getExplanation()} variant="filled" size="xs" radius="xl">
+                  ?
+                </Button>
+                <Text></Text>
+              </Stack>
             </Paper>
           </Grid.Col>
           <Grid.Col span={{ base: 12, md: 6 }} style={{ display: 'flex', justifyContent: 'center' }}>
@@ -126,13 +148,13 @@ export const SentenceBuilder = ({
             </Paper>
           </Grid.Col>
 
-          {surrendered && (
+          {/* {surrendered && (
             <Grid.Col span={{ base: 12, md: 6 }} style={{ display: 'flex', justifyContent: 'center' }}>
               <Paper p="xl" shadow="xl" radius="lg">
                 <Group gap="xs">{data?.translation}</Group>
               </Paper>
             </Grid.Col>
-          )}
+          )} */}
           <Grid.Col span={{ base: 12, md: 6 }} style={{ display: 'flex', justifyContent: 'center' }}>
             <Paper p="xl" shadow="xl" radius="lg">
               <Group>{selected.join(' ')}</Group>
