@@ -100,6 +100,7 @@ Requirements:
 - The word "${n}" must be used **in its proper Japanese form**, not as romaji or English.
 - The sentence must be written using correct **kanji and kana**, as a native speaker would write it.
 - Do not include any English or romaji in the sentence.
+- Do not put the japanese sentence in the translation output, only the translation of the sentence.
 
 Output format (in JSON):
 {
