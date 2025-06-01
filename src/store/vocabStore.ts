@@ -4771,7 +4771,7 @@ export const useVocabStore = create<{
         })
         .sort((a, b) => a.dueDate - b.dueDate)
 
-      return due.length > 0 ? due.slice(0, 5) : null
+      return due.length > 0 ? due : null
     }
   }
 })

@@ -12,9 +12,11 @@ interface ButtonValues {
 
 export const Matcher = () => {
   const getMatchWords = useVocabStore((s) => s.getMatchWords)
-  const [words, setWord] = useState(getMatchWords())
+  const [words] = useState(getMatchWords())
   const [buttonRow1, setButtonRow1] = useState<ButtonValues[]>([])
   const [buttonRow2, setButtonRow2] = useState<ButtonValues[]>([])
+
+  const [counter, setCounter] = useState<number>(0)
 
   const [selected, setSelected] = useState<boolean>()
 
@@ -61,22 +63,33 @@ export const Matcher = () => {
     setButtonRow2([...buttonRow2])
   }
 
-  useEffect(() => {
+  const setWords = () => {
     if (words) {
+      if (counter >= words.length) {
+        setCounter(0)
+      }
+
       setMeaningMode(false)
-      const row1 = words.map((word) => ({
+      const row1 = words.slice(counter, counter + 5).map((word) => ({
         word: word.word.split('/')[0],
         spelling: word.word.split('/')[1],
         meaning: word.meaning,
         activated: false,
         correct: false
       }))
-      const row2 = row1.map((word) => ({
+      const row2 = row1?.map((word) => ({
         ...word
       }))
-
+      const tempCounter = counter + 5
+      setCounter(tempCounter)
       setButtonRow1(row1)
       setButtonRow2(row2.sort(() => Math.random() - 0.5))
+    }
+  }
+
+  useEffect(() => {
+    if (words) {
+      setWords()
     }
   }, [words])
 
@@ -90,7 +103,7 @@ export const Matcher = () => {
       setButtonRow2((prevRow2) => prevRow2.map((button) => ({ ...button, correct: false })))
     }
     if (meaningMode && buttonRow1.every((button) => button.correct) && buttonRow2.every((button) => button.correct)) {
-      setWord(getMatchWords())
+      setWords()
     }
   }, [buttonRow2, buttonRow1, getMatchWords, meaningMode])
 
