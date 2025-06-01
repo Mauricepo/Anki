@@ -4,7 +4,7 @@ import { TrainerPage } from './pages/TrainerPage'
 import { VocabList } from './pages/VocabList'
 
 import { MantineProvider } from '@mantine/core'
-import { Matcher } from './pages/matcher'
+import { Matcher } from './pages/Matcher'
 export default function App() {
   return (
     <MantineProvider>
