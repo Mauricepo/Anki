@@ -4598,6 +4598,7 @@ export const useVocabStore = create<{
   reset: () => void
   setApiKey: (word: string) => void
   getApiKey: () => string
+  getMatchWords: () => VocabEntry[] | null
 }>(() => {
   const load = () => {
     const raw = localStorage.getItem('vocab')
@@ -4724,6 +4725,53 @@ export const useVocabStore = create<{
       const newVocab = { ...state.vocab, [w.word]: updated }
       save(newVocab, state.lastActivation)
       useVocabStore.setState({ vocab: newVocab })
+    },
+
+    getMatchWords: (): VocabEntry[] | null => {
+      const now = Date.now()
+      const state = useVocabStore.getState()
+      //  const { vocab, lastActivation } = state
+      const { vocab } = state
+
+      // Neue Aktivierung falls neuer Tag
+      //   const lastDay = new Date(lastActivation).toDateString()
+      //  const today = new Date(now).toDateString()
+
+      const updatedVocab = { ...vocab }
+      // if (lastDay !== today) {
+      // Neue Aktivierung von 10 Wörtern pro Tag
+      // const inactive = Object.values(vocab).filter((v) => !v.isActive)
+      // const toActivate = inactive.slice(0, DAILY_NEW_LIMIT)
+
+      // for (const entry of toActivate) {
+      //   updatedVocab[entry.word] = { ...entry, isActive: true }
+      // }
+
+      // aktiviert alle in dne nächsten 24 Stunden fälligen Karten
+
+      // const active = Object.values(vocab).filter((v) => v.isActive)
+
+      // for (const entry of active) {
+      //   if (entry.dueDate < now + 1 * 24 * 60 * 60 * 1000) {
+      //     updatedVocab[entry.word] = { ...entry, dueDate: now }
+      //   }
+      // }
+
+      // save(updatedVocab, now)
+      // useVocabStore.setState({ vocab: updatedVocab, lastActivation: now })
+      // }
+
+      const due = Object.values(updatedVocab)
+        .filter((v) => {
+          if (!v.isActive) return false
+          if (v.dueDate > now) return false
+
+          // Alle fälligen Karten zeigen, auch wenn sie heute schon gesehen wurden (wenn dueDate wieder <= now)
+          return true
+        })
+        .sort((a, b) => a.dueDate - b.dueDate)
+
+      return due.length > 0 ? due.slice(0, 5) : null
     }
   }
 })
